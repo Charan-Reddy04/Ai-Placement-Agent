@@ -1,0 +1,16 @@
+node_modules/
+*/node_modules/
+dist/
+*/dist/
+.env
+*/.env
+*.log
+.DS_Store
+uploads/*
+!uploads/.gitkeep
+backend/uploads/*
+!backend/uploads/.gitkeep
+!backend/uploads/resumes/
+backend/uploads/resumes/*
+!backend/uploads/resumes/.gitkeep
+

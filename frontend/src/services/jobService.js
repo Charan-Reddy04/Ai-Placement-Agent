@@ -1,0 +1,41 @@
+import api from './api';
+
+export const jobService = {
+  getJobs: async (params = {}) => {
+    const response = await api.get('/jobs', { params });
+    return response.data;
+  },
+
+  getJobById: async (id) => {
+    const response = await api.get(`/jobs/${id}`);
+    return response.data;
+  },
+
+  createJob: async (jobData) => {
+    const response = await api.post('/jobs', jobData);
+    return response.data;
+  },
+
+  updateJob: async (id, jobData) => {
+    const response = await api.put(`/jobs/${id}`, jobData);
+    return response.data;
+  },
+
+  updateJobStatus: async (id, status) => {
+    const response = await api.patch(`/jobs/${id}/status`, { status });
+    return response.data;
+  },
+
+  checkEligibility: async (jobId, studentId = null) => {
+    const response = await api.post(`/jobs/${jobId}/check-eligibility`, { studentId });
+    return response.data;
+  },
+
+  applyToJob: async (jobId) => {
+    const response = await api.post(`/jobs/${jobId}/apply`);
+    return response.data;
+  },
+};
+
+export default jobService;
+

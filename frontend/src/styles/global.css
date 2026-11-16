@@ -1,0 +1,88 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-deep-navy);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  /* Glassmorphism Card Style */
+  .glass-panel {
+    background: var(--surface-glass);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--surface-glass-border);
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .glass-panel-hover:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+  }
+
+  /* Soft Neumorphic Inset Panel */
+  .inset-panel {
+    background: rgba(240, 248, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: var(--shadow-inset-soft);
+  }
+
+  .dark .inset-panel {
+    background: rgba(11, 33, 53, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Gradient Button */
+  .btn-gradient {
+    background: var(--primary-gradient);
+    color: #FFFFFF;
+    font-weight: 600;
+    box-shadow: var(--shadow-button);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .btn-gradient:hover:not(:disabled) {
+    background: var(--primary-gradient-hover);
+    box-shadow: var(--shadow-button-hover);
+    transform: translateY(-1px);
+  }
+
+  .btn-gradient:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: var(--shadow-button);
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 158, 173, 0.25);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 158, 173, 0.45);
+  }
+}
