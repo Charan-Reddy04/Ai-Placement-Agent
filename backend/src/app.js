@@ -25,6 +25,9 @@ import agentRoutes from './routes/agentRoutes.js';
 
 const app = express();
 
+// Trust reverse proxy (Required for Render, Heroku, Cloudflare)
+app.set('trust proxy', 1);
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 300,
