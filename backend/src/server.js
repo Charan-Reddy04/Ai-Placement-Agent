@@ -14,7 +14,6 @@ const startServer = async () => {
   CampusPilot Backend Services Started
   Port:         ${env.PORT}
   Environment:  ${env.NODE_ENV}
-  Database:     ${env.MONGO_URI}
   Health Check: http://localhost:${env.PORT}/api/health
 =====================================================
       `);
