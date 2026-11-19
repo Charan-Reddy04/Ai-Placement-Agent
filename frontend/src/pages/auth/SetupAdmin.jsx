@@ -26,8 +26,9 @@ export const SetupAdmin = () => {
   useEffect(() => {
     authService.getSetupStatus()
       .then((res) => {
-        if (!res?.needsAdminSetup && res?.adminCount > 0) {
+        if (!res?.needsAdminSetup && (res?.adminCount > 0 || res?.adminExists)) {
           setAlreadyConfigured(true);
+          navigate('/login', { replace: true });
         }
       })
       .catch((err) => {
@@ -36,7 +37,7 @@ export const SetupAdmin = () => {
       .finally(() => {
         setChecking(false);
       });
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));

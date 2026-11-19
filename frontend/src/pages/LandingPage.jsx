@@ -241,11 +241,6 @@ export const LandingPage = () => {
                 Placement Officer Sign In
               </GradientButton>
             </Link>
-            <Link to="/setup-admin" className="w-full sm:w-auto">
-              <GradientButton variant="ghost" icon={Building2} size="lg" className="w-full sm:w-auto text-xs">
-                Admin Setup
-              </GradientButton>
-            </Link>
           </div>
 
           {/* Trust Metrics Bar */}
@@ -723,7 +718,6 @@ export const LandingPage = () => {
             <a href="#workflow" className="hover:text-brand-teal transition-colors">Workflow</a>
             <Link to="/login" className="hover:text-brand-teal transition-colors">Sign In</Link>
             <Link to="/register" className="hover:text-brand-teal transition-colors">Register</Link>
-            <Link to="/setup-admin" className="hover:text-brand-teal transition-colors">Setup Admin</Link>
           </div>
 
           <div>
