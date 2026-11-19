@@ -189,20 +189,22 @@ export const login = async (req, res, next) => {
 // @access  Public
 export const getSetupStatus = async (req, res, next) => {
   try {
-    const adminCount = await User.countDocuments({ role: 'admin' });
+    const existingAdmin = await User.findOne({ role: 'admin' }).select('email name');
     res.status(200).json({
       success: true,
-      needsAdminSetup: adminCount === 0,
-      adminCount,
+      needsAdminSetup: !existingAdmin,
+      adminExists: !!existingAdmin,
+      adminEmail: existingAdmin ? existingAdmin.email : null,
+      adminCount: existingAdmin ? 1 : 0,
     });
   } catch (error) {
     next(error);
   }
 };
 
-// @desc    Bootstrap / Provision Admin
+// @desc    Bootstrap / Provision Admin (STRICT SINGLE-ADMIN ACCESS)
 // @route   POST /api/auth/bootstrap-admin
-// @access  Public
+// @access  Public (Restricted to single admin)
 export const bootstrapAdmin = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -214,27 +216,59 @@ export const bootstrapAdmin = async (req, res, next) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    let admin = await User.findOne({ email: normalizedEmail });
 
+    // STRICT SINGLE-ADMIN POLICY: Check if an administrator already exists
+    const existingAdmin = await User.findOne({ role: 'admin' });
+
+    if (existingAdmin) {
+      // If an administrator already exists, strictly prevent any other email/person from becoming admin
+      if (existingAdmin.email !== normalizedEmail) {
+        return res.status(403).json({
+          success: false,
+          message: 'Access Restricted: CampusPilot enforces a strict single-administrator policy. A Master Administrator is already registered.',
+        });
+      }
+
+      // If matching the existing single master admin, allow password update
+      const salt = await bcrypt.genSalt(10);
+      existingAdmin.name = name.trim();
+      existingAdmin.passwordHash = await bcrypt.hash(password, salt);
+      existingAdmin.accountStatus = 'active';
+      await existingAdmin.save();
+
+      const token = generateToken(existingAdmin._id, existingAdmin.role);
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Master Administrator credentials updated successfully.',
+        token,
+        user: {
+          id: existingAdmin._id,
+          name: existingAdmin.name,
+          email: existingAdmin.email,
+          role: existingAdmin.role,
+        },
+      });
+    }
+
+    // No admin exists yet: Create the one and only Master Administrator
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    if (admin) {
-      // Upgrade or update password for existing account to admin
-      admin.name = name.trim();
-      admin.role = 'admin';
-      admin.passwordHash = passwordHash;
-      admin.accountStatus = 'active';
-      await admin.save();
-    } else {
-      admin = await User.create({
-        name: name.trim(),
-        email: normalizedEmail,
-        passwordHash,
-        role: 'admin',
-        accountStatus: 'active',
-      });
-    }
+    const admin = await User.create({
+      name: name.trim(),
+      email: normalizedEmail,
+      passwordHash,
+      role: 'admin',
+      accountStatus: 'active',
+    });
 
     const token = generateToken(admin._id, admin.role);
 
@@ -256,7 +290,7 @@ export const bootstrapAdmin = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: 'Administrator account successfully provisioned and activated.',
+      message: 'Sole Master Administrator account successfully provisioned and activated.',
       token,
       user: {
         id: admin._id,

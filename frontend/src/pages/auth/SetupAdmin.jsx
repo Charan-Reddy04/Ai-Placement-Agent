@@ -77,6 +77,47 @@ export const SetupAdmin = () => {
     }
   };
 
+  if (checking) {
+    return (
+      <GlassCard padding="lg" className="w-full relative shadow-soft-hover text-center py-12">
+        <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-xs text-brand-secondary dark:text-slate-400">Verifying administrative security state...</p>
+      </GlassCard>
+    );
+  }
+
+  if (alreadyConfigured) {
+    return (
+      <GlassCard padding="lg" className="w-full relative shadow-soft-hover text-center py-6 space-y-5">
+        <div className="w-16 h-16 rounded-3xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto shadow-sm">
+          <ShieldCheck className="w-8 h-8" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-brand-navy dark:text-slate-100">
+            Administrator Configured
+          </h2>
+          <p className="text-xs text-brand-secondary dark:text-slate-400 mt-2 max-w-sm mx-auto">
+            CampusPilot enforces a strict <strong>single administrator policy</strong>. The Master Administrator account is already provisioned and locked for institutional security.
+          </p>
+        </div>
+
+        <div className="p-3.5 rounded-control bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 text-xs text-brand-secondary dark:text-slate-300">
+          🔒 Only one person holds administrative privileges on this platform.
+        </div>
+
+        <div className="pt-2">
+          <Link
+            to="/login"
+            className="w-full py-2.5 px-4 rounded-control text-sm font-bold text-white bg-gradient-to-r from-brand-teal to-brand-cyan hover:opacity-95 shadow-md transition-all flex items-center justify-center gap-2"
+          >
+            <span>Proceed to Login</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </GlassCard>
+    );
+  }
+
   return (
     <GlassCard padding="lg" className="w-full relative shadow-soft-hover">
       <div className="text-center mb-6">
